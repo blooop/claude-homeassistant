@@ -18,14 +18,10 @@ class ValidationTestRunner:
         """Initialize the test runner."""
         self.config_dir = Path(config_dir).resolve()
         self.tools_dir = Path(__file__).parent
-        self.venv_dir = self.tools_dir.parent / "venv"
         self.results: Dict[str, Dict[str, Any]] = {}
 
     def get_python_executable(self) -> str:
-        """Get the Python executable from venv if available."""
-        venv_python = self.venv_dir / "bin" / "python"
-        if venv_python.exists():
-            return str(venv_python)
+        """Get the current Python executable (managed by pixi)."""
         return sys.executable
 
     def run_validator(

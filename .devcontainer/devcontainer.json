@@ -1,0 +1,39 @@
+{
+    "name": "claude-homeassistant",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "jjjermiah.pixi-vscode",
+                "charliermarsh.ruff",
+                "tamasfe.even-better-toml",
+                "mhutchie.git-graph",
+                "anthropic.claude-code",
+                "redhat.vscode-yaml"
+            ]
+        }
+    },
+    "runArgs": [
+        "--network=host"
+    ],
+    "containerEnv": {
+        "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
+        "XDG_CONFIG_HOME": "/home/vscode/.config",
+        "XDG_CACHE_HOME": "/home/vscode/.cache",
+        "XDG_DATA_HOME": "/home/vscode/.local/share",
+        "SSH_AUTH_SOCK": "/home/vscode/.ssh/agent.sock"
+    },
+    "mounts": [
+        "source=${localWorkspaceFolderBasename}-pixi,target=${containerWorkspaceFolder}/.pixi,type=volume",
+        "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind",
+        "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind",
+        "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind"
+    ],
+    "onCreateCommand": "[ -f .pixi/.gitignore ] || cp -a /home/vscode/.pixi-prewarm/. .pixi/ || true",
+    "postCreateCommand": "pixi install"
+}

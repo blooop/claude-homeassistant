@@ -13,15 +13,14 @@ if [[ "$CLAUDE_TOOL_NAME" == "Bash" ]]; then
         echo "🛡️  Pre-push validation: Checking Home Assistant configuration before sync..."
 
         # Check if validation tools exist
-        if [ ! -f "tools/run_tests.py" ] || [ ! -d "venv" ]; then
-            echo "❌ Home Assistant validation tools not found. Please run setup first."
+        if [ ! -f "tools/run_tests.py" ] || ! command -v pixi >/dev/null 2>&1; then
+            echo "❌ Home Assistant validation tools not found. Please run 'pixi install' first."
             echo "🚫 Blocking push to prevent invalid configuration upload."
             exit 1
         fi
 
         # Run validation (we're already in project root)
-        source venv/bin/activate
-        python tools/run_tests.py
+        pixi run python tools/run_tests.py
 
         validation_result=$?
 
